@@ -16,6 +16,9 @@ profile_route = '%s/%s/'
 query_route = '%s/graphql/query/' % (instagram_url)
 unfollow_route = '%s/web/friendships/%s/unfollow/'
 
+username = os.environ.get('USERNAME')
+password = os.environ.get('PASSWORD')
+
 session = requests.Session()
 
 def login():
@@ -45,8 +48,8 @@ def login():
     time.sleep(random.randint(2, 6))
 
     post_data = {
-        'username': os.environ.get('USERNAME'),
-        'password': os.environ.get('PASSWORD')
+        'username': username,
+        'password': password
     }
 
     response = session.post(login_route, data=post_data, allow_redirects=True)
@@ -184,7 +187,7 @@ def logout():
 
 
 def main():
-    if not os.environ.get('USERNAME') or not os.environ.get('PASSWORD'):
+    if not username and not password:
         sys.exit('please provide USERNAME and PASSWORD environement variables. Abording...')
 
     is_logged = login()
@@ -193,7 +196,7 @@ def main():
 
     time.sleep(random.randint(2, 4))
 
-    connected_user = get_user_profile(os.environ.get('USERNAME'))
+    connected_user = get_user_profile(username)
     print('You\'re now logged as {} ({} followers, {} following)'.format(connected_user['username'], connected_user['edge_followed_by']['count'], connected_user['edge_follow']['count']))
 
     time.sleep(random.randint(2, 4))
